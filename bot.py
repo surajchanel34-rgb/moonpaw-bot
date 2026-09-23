@@ -1,0 +1,1851 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+<title>MoonPaw</title>
+
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+
+<style>
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    -webkit-tap-highlight-color:transparent;
+}
+
+html,body{
+    width:100%;
+    min-height:100%;
+    background:#05060b;
+    color:#fff;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    overflow-x:hidden;
+}
+
+button{
+    font-family:inherit;
+    color:inherit;
+}
+
+.app{
+    width:100%;
+    max-width:600px;
+    min-height:100vh;
+    margin:auto;
+    padding:18px 16px 105px;
+    background:
+        radial-gradient(circle at 50% 30%,rgba(255,190,30,.10),transparent 30%),
+        radial-gradient(circle at 20% 70%,rgba(255,170,0,.06),transparent 30%),
+        #05060b;
+}
+
+/* HEADER */
+
+.header{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:16px;
+}
+
+.logo{
+    display:flex;
+    align-items:center;
+    gap:10px;
+}
+
+.logoIcon{
+    width:52px;
+    height:52px;
+    border-radius:50%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:31px;
+    background:linear-gradient(145deg,#ffd84d,#f39b00);
+    box-shadow:0 0 25px rgba(255,190,30,.25);
+}
+
+.logoText h1{
+    font-size:25px;
+    letter-spacing:2px;
+}
+
+.logoText p{
+    font-size:10px;
+    letter-spacing:4px;
+    color:#8e8e98;
+    margin-top:3px;
+}
+
+.connected{
+    border:1px solid #5f4916;
+    background:#11100c;
+    border-radius:22px;
+    padding:9px 12px;
+    font-size:11px;
+    display:flex;
+    align-items:center;
+    gap:7px;
+}
+
+.green{
+    width:8px;
+    height:8px;
+    background:#43e77d;
+    border-radius:50%;
+    box-shadow:0 0 10px #43e77d;
+}
+
+/* PROFILE */
+
+.profile{
+    border:1px solid #3c3015;
+    border-radius:22px;
+    padding:14px;
+    background:linear-gradient(145deg,#11110f,#090a0e);
+    box-shadow:0 0 25px rgba(255,190,30,.04);
+}
+
+.profileTop{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.player{
+    display:flex;
+    align-items:center;
+    gap:11px;
+}
+
+.avatar{
+    width:58px;
+    height:58px;
+    border-radius:50%;
+    border:2px solid #ffbd25;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:34px;
+    background:#18120a;
+}
+
+.playerName{
+    font-size:18px;
+    font-weight:bold;
+}
+
+.level{
+    color:#8c8c95;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.progress{
+    width:120px;
+    height:7px;
+    background:#25252a;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:7px;
+}
+
+.progressFill{
+    width:20%;
+    height:100%;
+    background:linear-gradient(90deg,#ff9d00,#ffd33d);
+}
+
+/* POINTS */
+
+.pointsBox{
+    min-width:125px;
+    border:1px solid #554016;
+    border-radius:17px;
+    padding:12px;
+    background:#10100f;
+}
+
+.smallLabel{
+    color:#8d8d96;
+    font-size:11px;
+}
+
+.points{
+    color:#ffc52f;
+    font-size:25px;
+    font-weight:bold;
+    margin-top:5px;
+}
+
+.pointsLabel{
+    color:#777780;
+    font-size:10px;
+    margin-top:4px;
+}
+
+/* ENERGY */
+
+.energy{
+    margin-top:12px;
+    border:1px solid #3c3015;
+    border-radius:20px;
+    padding:15px;
+    background:#0d0e0e;
+}
+
+.energyHead{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.energyTitle{
+    color:#9b9ba2;
+    font-size:13px;
+}
+
+.energyValue{
+    color:#ffc52f;
+    font-size:24px;
+    font-weight:bold;
+    margin-top:4px;
+}
+
+.energyTimer{
+    color:#9999a1;
+    font-size:12px;
+    margin-top:5px;
+}
+
+.energyBar{
+    width:100%;
+    height:10px;
+    background:#27272c;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:12px;
+}
+
+.energyFill{
+    height:100%;
+    width:100%;
+    background:linear-gradient(90deg,#e98a00,#ffd43d);
+    transition:width .3s;
+}
+
+/* COIN AREA */
+
+.tapArea{
+    position:relative;
+    min-height:350px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+}
+
+.tapHint{
+    color:#9999a2;
+    font-size:13px;
+    margin-bottom:20px;
+}
+
+.coin{
+    width:225px;
+    height:225px;
+    border-radius:50%;
+    border:8px solid #15130d;
+    background:
+        radial-gradient(circle at 35% 30%,#ffe87c,#ffb40d 45%,#d87900 100%);
+    box-shadow:
+        0 0 20px rgba(255,184,22,.55),
+        0 0 65px rgba(255,174,0,.22),
+        inset 0 0 20px rgba(255,255,255,.25);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:88px;
+    cursor:pointer;
+    user-select:none;
+    transition:transform .08s;
+    position:relative;
+}
+
+.coin:active{
+    transform:scale(.93);
+}
+
+.coin::after{
+    content:"";
+    position:absolute;
+    inset:14px;
+    border:2px solid rgba(255,255,255,.18);
+    border-radius:50%;
+}
+
+.paw{
+    filter:drop-shadow(0 4px 3px rgba(0,0,0,.4));
+}
+
+.tapText{
+    margin-top:17px;
+    color:#8f8f98;
+    font-size:12px;
+}
+
+/* +1 POPUP */
+
+.plusOne{
+    position:absolute;
+    left:50%;
+    top:46%;
+    transform:translate(-50%,-50%);
+    color:#ffd447;
+    font-size:28px;
+    font-weight:bold;
+    pointer-events:none;
+    animation:plusAnim .75s ease-out forwards;
+    z-index:20;
+}
+
+@keyframes plusAnim{
+    0%{
+        opacity:1;
+        transform:translate(-50%,-30%) scale(.7);
+    }
+    100%{
+        opacity:0;
+        transform:translate(-50%,-150%) scale(1.2);
+    }
+}
+
+/* QUICK MENU */
+
+.quickMenu{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:9px;
+    margin-bottom:18px;
+}
+
+.quick{
+    min-height:90px;
+    border:1px solid #3b3019;
+    border-radius:16px;
+    background:linear-gradient(145deg,#13130f,#0b0c0e);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    cursor:pointer;
+}
+
+.quick:active{
+    transform:scale(.96);
+}
+
+.quickIcon{
+    font-size:25px;
+}
+
+.quickTitle{
+    font-size:12px;
+    font-weight:bold;
+}
+
+.quickSub{
+    color:#777780;
+    font-size:9px;
+}
+
+/* CARDS */
+
+.card{
+    border:1px solid #3d3117;
+    border-radius:20px;
+    background:#0e0f13;
+    padding:15px;
+    margin-bottom:15px;
+}
+
+.cardHeader{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:13px;
+}
+
+.cardTitle{
+    color:#ffc52f;
+    font-size:16px;
+    font-weight:bold;
+}
+
+.cardSub{
+    color:#85858e;
+    font-size:11px;
+}
+
+/* DAILY */
+
+.dailyGrid{
+    display:grid;
+    grid-template-columns:repeat(7,1fr);
+    gap:5px;
+}
+
+.day{
+    min-height:90px;
+    border:1px solid #292a31;
+    border-radius:13px;
+    background:#111219;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    padding:5px;
+    position:relative;
+}
+
+.day.active{
+    border-color:#ffc52f;
+    box-shadow:0 0 12px rgba(255,190,30,.15);
+}
+
+.day.claimed{
+    background:#211a0d;
+}
+
+.dayName{
+    color:#92929b;
+    font-size:9px;
+}
+
+.dayIcon{
+    font-size:19px;
+    margin:5px 0;
+}
+
+.dayReward{
+    color:#ffc52f;
+    font-size:10px;
+    font-weight:bold;
+}
+
+.lock{
+    color:#55555e;
+    font-size:10px;
+}
+
+/* REFERRAL */
+
+.referral{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+}
+
+.referralText{
+    flex:1;
+}
+
+.referralTitle{
+    font-size:13px;
+    font-weight:bold;
+}
+
+.referralSub{
+    color:#777780;
+    font-size:10px;
+    margin-top:5px;
+}
+
+.copyBtn{
+    border:1px solid #564419;
+    background:#17140d;
+    color:#ffc52f;
+    padding:10px 13px;
+    border-radius:13px;
+    font-size:11px;
+}
+
+/* PAGE */
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+}
+
+.pageTitle{
+    font-size:24px;
+    font-weight:bold;
+    margin:10px 0 18px;
+}
+
+.option{
+    border:1px solid #302817;
+    border-radius:17px;
+    background:#101115;
+    padding:16px;
+    display:flex;
+    align-items:center;
+    gap:13px;
+    margin-bottom:10px;
+}
+
+.optionIcon{
+    font-size:28px;
+}
+
+.optionInfo{
+    flex:1;
+}
+
+.optionTitle{
+    font-weight:bold;
+    font-size:14px;
+}
+
+.optionDesc{
+    color:#777780;
+    font-size:11px;
+    margin-top:4px;
+}
+
+.optionBtn{
+    border:1px solid #634d16;
+    background:#1b170d;
+    color:#ffc52f;
+    border-radius:12px;
+    padding:8px 12px;
+    font-size:11px;
+}
+
+/* RANK */
+
+.rankRow{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:13px;
+    margin-bottom:7px;
+    background:#111219;
+    border:1px solid #292a31;
+    border-radius:15px;
+}
+
+.rankNumber{
+    width:30px;
+    font-weight:bold;
+    color:#ffc52f;
+}
+
+.rankAvatar{
+    width:38px;
+    height:38px;
+    border-radius:50%;
+    background:#201a0d;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:20px;
+}
+
+.rankName{
+    flex:1;
+    font-size:13px;
+}
+
+.rankPoints{
+    color:#ffc52f;
+    font-size:12px;
+}
+
+/* BOTTOM NAV */
+
+.bottomNav{
+    position:fixed;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:100%;
+    max-width:600px;
+    height:78px;
+    background:rgba(11,12,17,.97);
+    border-top:1px solid #292a30;
+    display:grid;
+    grid-template-columns:repeat(5,1fr);
+    z-index:100;
+    padding-bottom:env(safe-area-inset-bottom);
+}
+
+.navBtn{
+    border:0;
+    background:transparent;
+    color:#777780;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:5px;
+    font-size:10px;
+    cursor:pointer;
+}
+
+.navIcon{
+    font-size:23px;
+}
+
+.navBtn.active{
+    color:#ffc52f;
+}
+
+.navBtn.active .navIcon{
+    filter:drop-shadow(0 0 7px rgba(255,190,30,.45));
+}
+
+/* TOAST */
+
+.toast{
+    position:fixed;
+    left:50%;
+    bottom:92px;
+    transform:translateX(-50%) translateY(20px);
+    background:#18150e;
+    border:1px solid #6b5117;
+    color:#ffd13c;
+    padding:11px 17px;
+    border-radius:14px;
+    font-size:12px;
+    opacity:0;
+    pointer-events:none;
+    transition:.25s;
+    z-index:300;
+}
+
+.toast.show{
+    opacity:1;
+    transform:translateX(-50%) translateY(0);
+}
+
+/* MOBILE */
+
+@media(max-width:380px){
+    .coin{
+        width:195px;
+        height:195px;
+        font-size:75px;
+    }
+
+    .quick{
+        min-height:82px;
+    }
+
+    .quickSub{
+        display:none;
+    }
+
+    .dailyGrid{
+        gap:3px;
+    }
+
+    .day{
+        min-height:80px;
+    }
+
+    .dayReward{
+        font-size:9px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+
+<!-- ================= HOME ================= -->
+
+<div id="homePage" class="page active">
+
+    <div class="header">
+        <div class="logo">
+            <div class="logoIcon">🌙🐾</div>
+
+            <div class="logoText">
+                <h1>MOONPAW</h1>
+                <p>TAP • EARN • GROW</p>
+            </div>
+        </div>
+
+        <div class="connected">
+            ✈️ Mini App
+            <span class="green"></span>
+        </div>
+    </div>
+
+
+    <div class="profile">
+
+        <div class="profileTop">
+
+            <div class="player">
+                <div class="avatar">🐱</div>
+
+                <div>
+                    <div class="playerName">
+                        <span id="playerName">Player</span> 👑
+                    </div>
+
+                    <div class="level">
+                        Level <span id="level">1</span> •
+                        <span id="levelName">Newbie</span>
+                    </div>
+
+                    <div class="progress">
+                        <div id="levelProgress" class="progressFill"></div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="pointsBox">
+                <div class="smallLabel">🐾 POINTS</div>
+
+                <div id="points" class="points">0</div>
+
+                <div class="pointsLabel">
+                    MOONPAW POINTS
+                </div>
+            </div>
+
+        </div>
+
+
+        <div class="energy">
+
+            <div class="energyHead">
+
+                <div>
+                    <div class="energyTitle">⚡ ENERGY</div>
+
+                    <div id="energyValue" class="energyValue">
+                        1000
+                    </div>
+
+                    <div id="energyTimer" class="energyTimer">
+                        03:00:00
+                    </div>
+                </div>
+
+                <div class="smallLabel">
+                    FULL RESTORE
+                </div>
+
+            </div>
+
+            <div class="energyBar">
+                <div id="energyFill" class="energyFill"></div>
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- TAP -->
+
+    <div class="tapArea">
+
+        <div class="tapHint">
+            Tap the coin to earn MoonPaw Points
+        </div>
+
+        <div id="coin" class="coin">
+            <span class="paw">🐾</span>
+        </div>
+
+        <div class="tapText">
+            Every tap gives +1 🐾
+        </div>
+
+    </div>
+
+
+    <!-- QUICK BUTTONS -->
+
+    <div class="quickMenu">
+
+        <button class="quick" onclick="showPage('earnPage')">
+            <div class="quickIcon">🎁</div>
+            <div class="quickTitle">Daily</div>
+            <div class="quickSub">Claim reward</div>
+        </button>
+
+        <button class="quick" onclick="showPage('invitePage')">
+            <div class="quickIcon">👥</div>
+            <div class="quickTitle">Invite</div>
+            <div class="quickSub">Get rewards</div>
+        </button>
+
+        <button class="quick" onclick="showPage('rankPage')">
+            <div class="quickIcon">🏆</div>
+            <div class="quickTitle">Rank</div>
+            <div class="quickSub">Top players</div>
+        </button>
+
+        <button class="quick" onclick="showPage('tasksPage')">
+            <div class="quickIcon">📋</div>
+            <div class="quickTitle">Tasks</div>
+            <div class="quickSub">Earn more</div>
+        </button>
+
+    </div>
+
+
+    <!-- DAILY REWARDS -->
+
+    <div class="card">
+
+        <div class="cardHeader">
+
+            <div>
+                <div class="cardTitle">🎁 DAILY REWARDS</div>
+                <div class="cardSub">Come back every day!</div>
+            </div>
+
+            <div class="cardSub">
+                Day <span id="dailyDay">1</span> / 7
+            </div>
+
+        </div>
+
+        <div id="dailyGrid" class="dailyGrid"></div>
+
+    </div>
+
+
+    <!-- REFERRAL -->
+
+    <div class="card">
+
+        <div class="referral">
+
+            <div class="referralText">
+                <div class="referralTitle">
+                    👥 Your Referral Link
+                </div>
+
+                <div class="referralSub">
+                    Invite friends and earn together
+                </div>
+            </div>
+
+            <button class="copyBtn" onclick="copyReferral()">
+                🔗 Copy Link
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= EARN ================= -->
+
+<div id="earnPage" class="page">
+
+    <div class="pageTitle">🎁 Daily Rewards</div>
+
+    <div class="card">
+        <div class="cardHeader">
+            <div>
+                <div class="cardTitle">DAILY STREAK</div>
+                <div class="cardSub">Come back every day</div>
+            </div>
+
+            <div class="cardSub">
+                Day <span id="earnDay">1</span> / 7
+            </div>
+        </div>
+
+        <div id="dailyGrid2" class="dailyGrid"></div>
+    </div>
+
+</div>
+
+
+<!-- ================= INVITE ================= -->
+
+<div id="invitePage" class="page">
+
+    <div class="pageTitle">👥 Invite Friends</div>
+
+    <div class="card">
+
+        <div style="font-size:45px;text-align:center;margin:15px;">
+            👥🐾
+        </div>
+
+        <div style="text-align:center;font-size:20px;font-weight:bold;">
+            Invite & Earn
+        </div>
+
+        <div style="text-align:center;color:#85858e;font-size:12px;margin-top:8px;">
+            Invite your friends to MoonPaw and grow your community.
+        </div>
+
+        <button class="copyBtn"
+                style="width:100%;margin-top:18px;"
+                onclick="copyReferral()">
+            🔗 Copy Referral Link
+        </button>
+
+        <div style="text-align:center;color:#777780;font-size:11px;margin-top:15px;">
+            Your referrals: <b id="referrals">0</b>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= TASKS ================= -->
+
+<div id="tasksPage" class="page">
+
+    <div class="pageTitle">📋 Tasks</div>
+
+    <div class="option">
+        <div class="optionIcon">📢</div>
+
+        <div class="optionInfo">
+            <div class="optionTitle">Join MoonPaw Community</div>
+            <div class="optionDesc">Community task</div>
+        </div>
+
+        <button class="optionBtn"
+                onclick="taskReward(this,50)">
+            +50
+        </button>
+    </div>
+
+
+    <div class="option">
+        <div class="optionIcon">🐾</div>
+
+        <div class="optionInfo">
+            <div class="optionTitle">Tap MoonPaw</div>
+            <div class="optionDesc">Keep collecting points</div>
+        </div>
+
+        <button class="optionBtn"
+                onclick="showPage('homePage')">
+            Play
+        </button>
+    </div>
+
+
+    <div class="option">
+        <div class="optionIcon">👥</div>
+
+        <div class="optionInfo">
+            <div class="optionTitle">Invite a Friend</div>
+            <div class="optionDesc">Grow your referral count</div>
+        </div>
+
+        <button class="optionBtn"
+                onclick="showPage('invitePage')">
+            Invite
+        </button>
+    </div>
+
+</div>
+
+
+<!-- ================= RANK ================= -->
+
+<div id="rankPage" class="page">
+
+    <div class="pageTitle">🏆 Leaderboard</div>
+
+    <div class="card">
+
+        <div class="rankRow">
+            <div class="rankNumber">1</div>
+            <div class="rankAvatar">🐺</div>
+            <div class="rankName">MoonMaster</div>
+            <div class="rankPoints">25,430 🐾</div>
+        </div>
+
+        <div class="rankRow">
+            <div class="rankNumber">2</div>
+            <div class="rankAvatar">🦊</div>
+            <div class="rankName">PawKing</div>
+            <div class="rankPoints">19,820 🐾</div>
+        </div>
+
+        <div class="rankRow">
+            <div class="rankNumber">3</div>
+            <div class="rankAvatar">🐯</div>
+            <div class="rankName">NightPaw</div>
+            <div class="rankPoints">15,600 🐾</div>
+        </div>
+
+        <div class="rankRow">
+            <div class="rankNumber">4</div>
+            <div class="rankAvatar">🐱</div>
+            <div class="rankName">You</div>
+            <div id="yourRankPoints" class="rankPoints">0 🐾</div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- ================= ME ================= -->
+
+<div id="mePage" class="page">
+
+    <div class="pageTitle">👤 My Profile</div>
+
+    <div class="card">
+
+        <div style="text-align:center;">
+
+            <div class="avatar"
+                 style="margin:auto;width:85px;height:85px;font-size:50px;">
+                🐱
+            </div>
+
+            <div id="meName"
+                 style="font-size:22px;font-weight:bold;margin-top:12px;">
+                Player
+            </div>
+
+            <div class="cardSub" style="margin-top:5px;">
+                MoonPaw Player
+            </div>
+
+        </div>
+
+        <div class="option" style="margin-top:20px;">
+            <div class="optionIcon">🐾</div>
+
+            <div class="optionInfo">
+                <div class="optionTitle">Points</div>
+                <div class="optionDesc">Your MoonPaw points</div>
+            </div>
+
+            <div id="mePoints" style="color:#ffc52f;font-weight:bold;">
+                0
+            </div>
+        </div>
+
+        <div class="option">
+            <div class="optionIcon">⚡</div>
+
+            <div class="optionInfo">
+                <div class="optionTitle">Energy Capacity</div>
+                <div class="optionDesc">Maximum energy</div>
+            </div>
+
+            <div id="meEnergy" style="color:#ffc52f;font-weight:bold;">
+                1000
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+</div>
+
+
+<!-- BOTTOM NAV -->
+
+<nav class="bottomNav">
+
+    <button class="navBtn active"
+            data-page="homePage"
+            onclick="showPage('homePage')">
+        <div class="navIcon">🏠</div>
+        Home
+    </button>
+
+    <button class="navBtn"
+            data-page="earnPage"
+            onclick="showPage('earnPage')">
+        <div class="navIcon">🪙</div>
+        Earn
+    </button>
+
+    <button class="navBtn"
+            data-page="tasksPage"
+            onclick="showPage('tasksPage')">
+        <div class="navIcon">📋</div>
+        Tasks
+    </button>
+
+    <button class="navBtn"
+            data-page="rankPage"
+            onclick="showPage('rankPage')">
+        <div class="navIcon">🏆</div>
+        Rank
+    </button>
+
+    <button class="navBtn"
+            data-page="mePage"
+            onclick="showPage('mePage')">
+        <div class="navIcon">👤</div>
+        Me
+    </button>
+
+</nav>
+
+
+<div id="toast" class="toast"></div>
+
+
+<script>
+
+/* =========================================
+   MOONPAW GAME SETTINGS
+========================================= */
+
+const MAX_ENERGY = 1000;
+
+/*
+   FULL ENERGY RESTORE TIME
+
+   3 hours = 10800 seconds
+*/
+const FULL_RESTORE_SECONDS = 3 * 60 * 60;
+
+
+/* =========================================
+   GAME DATA
+========================================= */
+
+let saved = JSON.parse(
+    localStorage.getItem("moonpawData") || "null"
+);
+
+let game = saved || {
+    points: 0,
+    energy: MAX_ENERGY,
+    lastEnergyTime: Date.now(),
+    dailyDay: 1,
+    lastDaily: null,
+    referrals: 0,
+    claimedDays: []
+};
+
+
+/* =========================================
+   TELEGRAM
+========================================= */
+
+const tg =
+    window.Telegram &&
+    window.Telegram.WebApp
+    ? window.Telegram.WebApp
+    : null;
+
+if(tg){
+
+    tg.ready();
+
+    tg.expand();
+
+    if(tg.initDataUnsafe &&
+       tg.initDataUnsafe.user){
+
+        const user =
+            tg.initDataUnsafe.user;
+
+        const name =
+            user.first_name ||
+            user.username ||
+            "Player";
+
+        document.getElementById("playerName")
+            .textContent = name;
+
+        document.getElementById("meName")
+            .textContent = name;
+    }
+}
+
+
+/* =========================================
+   SAVE
+========================================= */
+
+function saveGame(){
+
+    localStorage.setItem(
+        "moonpawData",
+        JSON.stringify(game)
+    );
+}
+
+
+/* =========================================
+   ENERGY SYSTEM
+========================================= */
+
+function updateEnergy(){
+
+    const now = Date.now();
+
+    const elapsed =
+        Math.floor(
+            (now - game.lastEnergyTime) / 1000
+        );
+
+    if(elapsed > 0){
+
+        /*
+           Energy regeneration is based
+           on a 3-hour full restoration.
+
+           1000 energy / 10800 seconds
+        */
+
+        const energyPerSecond =
+            MAX_ENERGY / FULL_RESTORE_SECONDS;
+
+        game.energy = Math.min(
+            MAX_ENERGY,
+            game.energy +
+            elapsed * energyPerSecond
+        );
+
+        game.lastEnergyTime = now;
+
+        saveGame();
+    }
+
+    renderEnergy();
+}
+
+
+function renderEnergy(){
+
+    const energy =
+        Math.floor(game.energy);
+
+    document.getElementById("energyValue")
+        .textContent =
+        energy.toLocaleString();
+
+    const percentage =
+        (game.energy / MAX_ENERGY) * 100;
+
+    document.getElementById("energyFill")
+        .style.width =
+        Math.max(0,Math.min(100,percentage)) + "%";
+
+
+    const remaining =
+        MAX_ENERGY - game.energy;
+
+    if(remaining <= 0){
+
+        document.getElementById("energyTimer")
+            .textContent =
+            "FULL ⚡";
+
+        return;
+    }
+
+
+    const secondsNeeded =
+        Math.ceil(
+            remaining /
+            (MAX_ENERGY / FULL_RESTORE_SECONDS)
+        );
+
+    document.getElementById("energyTimer")
+        .textContent =
+        formatTime(secondsNeeded);
+}
+
+
+function formatTime(seconds){
+
+    seconds = Math.max(0,Math.floor(seconds));
+
+    const h =
+        Math.floor(seconds / 3600);
+
+    const m =
+        Math.floor((seconds % 3600) / 60);
+
+    const s =
+        seconds % 60;
+
+    return String(h).padStart(2,"0")
+        + ":" +
+        String(m).padStart(2,"0")
+        + ":" +
+        String(s).padStart(2,"0");
+}
+
+
+/* =========================================
+   TAP
+========================================= */
+
+document.getElementById("coin")
+    .addEventListener("click",tapCoin);
+
+
+function tapCoin(){
+
+    updateEnergy();
+
+    if(game.energy < 1){
+
+        showToast("⚡ Not enough energy!");
+
+        return;
+    }
+
+
+    game.energy -= 1;
+
+    game.points += 1;
+
+    saveGame();
+
+    showPlusOne();
+
+    render();
+}
+
+
+function showPlusOne(){
+
+    const area =
+        document.querySelector(".tapArea");
+
+    const popup =
+        document.createElement("div");
+
+    popup.className = "plusOne";
+
+    popup.textContent = "+1 🐾";
+
+    area.appendChild(popup);
+
+    setTimeout(
+        () => popup.remove(),
+        800
+    );
+}
+
+
+/* =========================================
+   DAILY REWARDS
+========================================= */
+
+const dailyRewards =
+    [100,150,200,250,300,400,500];
+
+
+function renderDaily(){
+
+    const grids = [
+        document.getElementById("dailyGrid"),
+        document.getElementById("dailyGrid2")
+    ];
+
+    grids.forEach(grid => {
+
+        if(!grid) return;
+
+        grid.innerHTML = "";
+
+        dailyRewards.forEach(
+            (reward,index) => {
+
+                const day =
+                    index + 1;
+
+                const box =
+                    document.createElement("div");
+
+                box.className = "day";
+
+                if(day === game.dailyDay){
+                    box.classList.add("active");
+                }
+
+                if(
+                    game.claimedDays
+                    .includes(day)
+                ){
+                    box.classList.add("claimed");
+                }
+
+
+                let icon = "🐾";
+
+                if(day === 7){
+                    icon = "👑";
+                }
+
+
+                box.innerHTML = `
+                    <div class="dayName">
+                        Day ${day}
+                    </div>
+
+                    <div class="dayIcon">
+                        ${icon}
+                    </div>
+
+                    <div class="dayReward">
+                        +${reward}
+                    </div>
+
+                    <div class="lock">
+                        ${
+                            game.claimedDays
+                            .includes(day)
+                            ? "✓"
+                            : day === game.dailyDay
+                            ? "CLAIM"
+                            : "🔒"
+                        }
+                    </div>
+                `;
+
+
+                if(day === game.dailyDay){
+
+                    box.onclick = () => {
+
+                        claimDaily();
+
+                    };
+
+                    box.style.cursor =
+                        "pointer";
+                }
+
+
+                grid.appendChild(box);
+
+            }
+        );
+
+    });
+
+
+    document.getElementById("dailyDay")
+        .textContent =
+        game.dailyDay;
+
+    document.getElementById("earnDay")
+        .textContent =
+        game.dailyDay;
+}
+
+
+function claimDaily(){
+
+    const today =
+        new Date()
+        .toISOString()
+        .slice(0,10);
+
+
+    if(game.lastDaily === today){
+
+        showToast(
+            "🎁 You already claimed today!"
+        );
+
+        return;
+    }
+
+
+    const reward =
+        dailyRewards[
+            game.dailyDay - 1
+        ];
+
+
+    game.points += reward;
+
+    game.lastDaily = today;
+
+    if(
+        !game.claimedDays
+        .includes(game.dailyDay)
+    ){
+
+        game.claimedDays
+            .push(game.dailyDay);
+    }
+
+
+    if(game.dailyDay < 7){
+
+        game.dailyDay++;
+    }
+
+
+    saveGame();
+
+    render();
+
+    showToast(
+        `🎁 +${reward} MoonPaw Points!`
+    );
+}
+
+
+/* =========================================
+   NAVIGATION
+========================================= */
+
+function showPage(pageId){
+
+    document
+        .querySelectorAll(".page")
+        .forEach(page => {
+
+            page.classList.remove("active");
+
+        });
+
+
+    const page =
+        document.getElementById(pageId);
+
+    if(page){
+
+        page.classList.add("active");
+    }
+
+
+    document
+        .querySelectorAll(".navBtn")
+        .forEach(btn => {
+
+            btn.classList.remove("active");
+
+            if(
+                btn.dataset.page === pageId
+            ){
+
+                btn.classList.add("active");
+            }
+
+        });
+
+
+    window.scrollTo({
+        top:0,
+        behavior:"smooth"
+    });
+}
+
+
+/* =========================================
+   INVITE
+========================================= */
+
+function getReferralLink(){
+
+    let username =
+        "MoonPaw_Airdropbot";
+
+
+    if(
+        tg &&
+        tg.initDataUnsafe &&
+        tg.initDataUnsafe.user
+    ){
+
+        /*
+           The actual bot username can be
+           changed here later if needed.
+        */
+
+        username =
+            "MoonPaw_Airdropbot";
+    }
+
+
+    return `https://t.me/${username}?startapp=invite`;
+}
+
+
+async function copyReferral(){
+
+    const link =
+        getReferralLink();
+
+    try{
+
+        await navigator.clipboard
+            .writeText(link);
+
+        showToast(
+            "🔗 Referral link copied!"
+        );
+
+    }catch(e){
+
+        showToast(
+            link
+        );
+    }
+}
+
+
+/* =========================================
+   TASKS
+========================================= */
+
+function taskReward(button,amount){
+
+    if(
+        button.dataset.done === "true"
+    ){
+
+        showToast(
+            "✅ Task already completed!"
+        );
+
+        return;
+    }
+
+
+    game.points += amount;
+
+    button.dataset.done = "true";
+
+    button.textContent = "✓";
+
+    saveGame();
+
+    render();
+
+    showToast(
+        `🎉 +${amount} Points!`
+    );
+}
+
+
+/* =========================================
+   LEVEL
+========================================= */
+
+function updateLevel(){
+
+    const points =
+        game.points;
+
+    let level = 1;
+    let name = "Newbie";
+
+    if(points >= 10000){
+
+        level = 5;
+        name = "Moon Legend";
+
+    }else if(points >= 5000){
+
+        level = 4;
+        name = "Paw Master";
+
+    }else if(points >= 2500){
+
+        level = 3;
+        name = "Moon Hunter";
+
+    }else if(points >= 1000){
+
+        level = 2;
+        name = "Paw Rookie";
+    }
+
+
+    document.getElementById("level")
+        .textContent = level;
+
+    document.getElementById("levelName")
+        .textContent = name;
+
+
+    let progress = 0;
+
+    if(level === 1){
+
+        progress =
+            (points / 1000) * 100;
+
+    }else if(level === 2){
+
+        progress =
+            ((points - 1000) / 1500) * 100;
+
+    }else if(level === 3){
+
+        progress =
+            ((points - 2500) / 2500) * 100;
+
+    }else if(level === 4){
+
+        progress =
+            ((points - 5000) / 5000) * 100;
+
+    }else{
+
+        progress = 100;
+    }
+
+
+    document.getElementById(
+        "levelProgress"
+    ).style.width =
+        Math.min(100,Math.max(0,progress))
+        + "%";
+}
+
+
+/* =========================================
+   RENDER
+========================================= */
+
+function render(){
+
+    document.getElementById("points")
+        .textContent =
+        game.points.toLocaleString();
+
+
+    document.getElementById("yourRankPoints")
+        .textContent =
+        game.points.toLocaleString()
+        + " 🐾";
+
+
+    document.getElementById("mePoints")
+        .textContent =
+        game.points.toLocaleString();
+
+
+    document.getElementById("meEnergy")
+        .textContent =
+        MAX_ENERGY.toLocaleString();
+
+
+    document.getElementById("referrals")
+        .textContent =
+        game.referrals;
+
+
+    updateLevel();
+
+    updateEnergy();
+
+    renderDaily();
+}
+
+
+/* =========================================
+   TOAST
+========================================= */
+
+let toastTimer;
+
+function showToast(message){
+
+    const toast =
+        document.getElementById("toast");
+
+    toast.textContent =
+        message;
+
+    toast.classList.add("show");
+
+
+    clearTimeout(toastTimer);
+
+    toastTimer =
+        setTimeout(() => {
+
+            toast.classList.remove(
+                "show"
+            );
+
+        },1800);
+}
+
+
+/* =========================================
+   START
+========================================= */
+
+render();
+
+
+/*
+   Update energy every second.
+*/
+setInterval(() => {
+
+    updateEnergy();
+
+},1000);
+
+
+/*
+   Save when app goes into background.
+*/
+document.addEventListener(
+    "visibilitychange",
+    () => {
+
+        if(document.hidden){
+
+            saveGame();
+
+        }else{
+
+            updateEnergy();
+
+            render();
+        }
+
+    }
+);
+
+</script>
+
+</body>
+</html>
